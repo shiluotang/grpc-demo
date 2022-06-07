@@ -19,8 +19,15 @@ check_PROGRAMS += test-grpc
 test_grpc_SOURCES = test-grpc.cc
 test_grpc_SOURCES += $(builddir)/demo.pb.cc $(builddir)/demo.pb.h
 test_grpc_SOURCES += $(builddir)/demo.grpc.pb.cc $(builddir)/demo.grpc.pb.h
-BUILT_SOURCES = demo.pb.cc demo.pb.h
+
+BUILT_SOURCES =
+
+BUILT_SOURCES += demo.pb.cc demo.pb.h
 BUILT_SOURCES += demo.grpc.pb.cc demo.grpc.pb.h
+
+MOSTLYCLEANFILES =
+MOSTLYCLEANFILES += demo.pb.cc demo.pb.h
+MOSTLYCLEANFILES += demo.grpc.pb.cc demo.grpc.pb.h
 
 %.grpc.pb.cc %.grpc.pb.h: %.proto
 	$(AM_V_GEN) $(PROTOC) -I$(srcdir) --grpc_out=$(builddir) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN) $^
