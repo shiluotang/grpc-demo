@@ -104,7 +104,8 @@ namespace {
                 std::shared_ptr<grpc::ServerCredentials> creds =
                     this->createCredentials();
                 int selected_port = 0;
-                std::string ep = endpoint("localhost", _M_port);
+                // "localhost" may not be an alias to 0.0.0.0 in some system
+                std::string ep = endpoint("0.0.0.0", _M_port);
                 _M_server = grpc::ServerBuilder()
                     .AddListeningPort(ep, creds, &selected_port)
                     .RegisterService(_M_service.get())
@@ -360,7 +361,8 @@ int main(int argc, char* argv[]) try {
     server.start();
 
     MySslClient<DemoService> client;
-    client.setEndpoint("localhost", server.getLocalPort());
+    // "localhost" may not be an alias to 0.0.0.0 in some system
+    client.setEndpoint("0.0.0.0", server.getLocalPort());
     std::ifstream trust_stream("../../tests/data/crt.pem");
     if (!trust_stream)
         throw std::runtime_error("trust_stream open failed!");

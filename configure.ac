@@ -24,6 +24,7 @@ AC_PATH_PROG([GRPC_CPP_PLUGIN], [grpc_cpp_plugin])
 AX_CXX_COMPILE_STDCXX([11], [ext], [mandatory])
 # Checks for libraries.
 PKG_CHECK_MODULES([PROTOBUF], [protobuf])
+PKG_CHECK_MODULES([SSL], [openssl])
 PKG_CHECK_MODULES([GRPC], [grpc++])
 
 # Checks for header files.
