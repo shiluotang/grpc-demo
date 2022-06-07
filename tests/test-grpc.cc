@@ -32,22 +32,36 @@ namespace {
         std::istreambuf_iterator<char> eos;
         return std::string(it, eos);
     }
-
     std::string readPrivateKey(std::istream &in, std::string const &passphrase) {
+        struct bio_deleter {
+            void operator()(BIO *p) {
+                if (p)
+                    BIO_free_all(p);
+            }
+        };
+        struct evp_pkey_deleter {
+            void operator()(EVP_PKEY *p) {
+                if (p)
+                    EVP_PKEY_free(p);
+            }
+        };
+
         std::string const &key_content = streamContent(in);
-        BIO *bin = BIO_new_mem_buf(key_content.data(), key_content.size());
-        std::shared_ptr<BIO> bio_guarder(bin, [](BIO *p) { BIO_free_all(p); });
-        EVP_PKEY *pkey = PEM_read_bio_PrivateKey(
-                bin,
+        std::shared_ptr<BIO> bin(
+                BIO_new_mem_buf(key_content.data(), key_content.size()),
+                bio_deleter());
+        std::shared_ptr<EVP_PKEY> pkey(PEM_read_bio_PrivateKey(
+                bin.get(),
                 NULL,
                 NULL,
-                const_cast<char*>(passphrase.c_str()));
+                const_cast<char*>(passphrase.c_str())),
+                evp_pkey_deleter());
         if (!pkey)
             throw std::runtime_error("read private key failed!");
-        BIO *bout = BIO_new(BIO_s_mem());
+        std::shared_ptr<BIO> bout(BIO_new(BIO_s_mem()), bio_deleter());
         int rc = PEM_write_bio_PrivateKey(
-                bout,
-                pkey,
+                bout.get(),
+                pkey.get(),
                 NULL,
                 NULL,
                 0,
@@ -57,7 +71,7 @@ namespace {
             throw std::runtime_error("PEM_write_bio_PrivateKey failed");
         char *p = NULL;
         long size = 0;
-        size = BIO_get_mem_data(bout, &p);
+        size = BIO_get_mem_data(bout.get(), &p);
         return std::string(p, size);
     }
 
