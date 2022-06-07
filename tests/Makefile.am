@@ -12,6 +12,9 @@ AM_LDFLAGS  += $(GRPC_LIBS)
 
 check_PROGRAMS =
 
+# grpc integrate with automake is copyed from answer in the following link
+# https://stackoverflow.com/questions/13939904/how-to-use-protocol-buffers-with-autoconf-automake
+
 check_PROGRAMS += test-grpc
 test_grpc_SOURCES = test-grpc.cc
 test_grpc_SOURCES += $(builddir)/demo.pb.cc $(builddir)/demo.pb.h
