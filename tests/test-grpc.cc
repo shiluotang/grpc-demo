@@ -198,9 +198,8 @@ namespace {
                     throw std::runtime_error("key or certificate is empty!");
                 grpc::SslServerCredentialsOptions opts;
                 opts.force_client_auth = false;
-                // allow client certificate absent
                 opts.client_certificate_request =
-                    GRPC_SSL_REQUEST_CLIENT_CERTIFICATE_BUT_DONT_VERIFY;
+                    GRPC_SSL_DONT_REQUEST_CLIENT_CERTIFICATE;
                 grpc::SslServerCredentialsOptions::PemKeyCertPair pair;
                 pair.private_key = _M_ssl_key;
                 pair.cert_chain = _M_ssl_crt;

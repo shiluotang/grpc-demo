@@ -20,8 +20,8 @@ check_PROGRAMS =
 
 check_PROGRAMS += test-grpc
 test_grpc_SOURCES = test-grpc.cc
-test_grpc_SOURCES += $(builddir)/demo.pb.cc $(builddir)/demo.pb.h
-test_grpc_SOURCES += $(builddir)/demo.grpc.pb.cc $(builddir)/demo.grpc.pb.h
+test_grpc_SOURCES += @builddir@/demo.pb.cc @builddir@/demo.pb.h
+test_grpc_SOURCES += @builddir@/demo.grpc.pb.cc @builddir@/demo.grpc.pb.h
 
 BUILT_SOURCES =
 
